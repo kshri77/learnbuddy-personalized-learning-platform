@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LearnBuddy — Quiz</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<style>
+body{font-family:'Inter',sans-serif;background:#f9f9f9;color:#1E3A8A;margin:0;padding:0;}
+.header{padding:20px;text-align:center;background:#4dabf7;color:#fff;font-weight:700;font-size:24px;}
+.container{max-width:800px;margin:50px auto;padding:20px;background:#fff;border-radius:12px;box-shadow:0 8px 20px rgba(0,0,0,0.1);}
+h2{font-family:'Poppins',sans-serif;}
+button{padding:10px 20px;margin-top:20px;border:none;border-radius:8px;background:#4dabf7;color:#fff;font-weight:600;cursor:pointer;transition:0.2s;}
+button:hover{background:#1E3A8A;}
+.question{margin-bottom:20px;}
+.options{display:flex;flex-direction:column;gap:12px;margin-top:10px;}
+.options button{background:#f0f8ff;color:#1E3A8A;}
+.options button.selected{background:#4dabf7;color:#fff;}
+.loader{text-align:center;padding:50px;font-size:18px;color:#374151;}
+</style>
+</head>
+<body>
+
+<div class="header">LearnBuddy — Quiz</div>
+<div class="container">
+  <h2 id="quizTitle">Loading Quiz...</h2>
+  <div id="quizContainer" class="loader">Fetching quiz...</div>
+  <button id="nextBtn" style="display:none;">Next</button>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-app.js";
+import { getFirestore, doc, setDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-firestore.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-auth.js";
+
+// --- Firebase config ---
+const firebaseConfig = {
+  apiKey: "AIzaSyBY3vXosHcqGT1T6Jo4-0QhkusmM5a0Cyo",
+  authDomain: "learnbuddy-c0f4b.firebaseapp.com",
+  projectId: "learnbuddy-c0f4b",
+  storageBucket: "learnbuddy-c0f4b.appspot.com",
+  messagingSenderId: "658794807805",
+  appId: "1:658794807805:web:319bc7ddee319359149994",
+  measurementId: "G-3CMN5FG3GQ"
+};
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+
+// --- Get subject & gradeGroup from URL ---
+const urlParams = new URLSearchParams(window.location.search);
+const subject = urlParams.get('subject') || 'Science';
+const gradeGroup = urlParams.get('grade') || '11-12';
+document.getElementById("quizTitle").textContent = `Quiz — ${subject}`;
+
+// --- Fetch quiz from backend ---
+async function generateQuiz(subject, gradeGroup="11-12", numQuestions=5){
+  try {
+    const res = await fetch("/generate-quiz", {
+      method: "POST",
+      headers: {"Content-Type":"application/json"},
+      body: JSON.stringify({subject, gradeGroup, numQuestions})
+    });
+    const data = await res.json();
+    return data.questions || [];
+  } catch(e){
+    console.error("Quiz fetch error:", e);
+    return [];
+  }
+}
+
+// --- Quiz rendering ---
+let questions = [], currentQ = 0, userAnswers = [];
+const container = document.getElementById("quizContainer");
+const nextBtn = document.getElementById("nextBtn");
+
+function showQuestion(qIndex){
+  const q = questions[qIndex];
+  container.innerHTML = `
+    <div class="question">${qIndex+1}. ${q.question}</div>
+    <div class="options">
+      ${q.options.map(opt=>`<button class="option-btn">${opt}</button>`).join("")}
+    </div>
+  `;
+  MathJax.typesetPromise();
+
+  container.querySelectorAll(".option-btn").forEach(btn=>{
+    btn.addEventListener("click", ()=>{
+      container.querySelectorAll(".option-btn").forEach(b=>b.classList.remove("selected"));
+      btn.classList.add("selected");
+      userAnswers[qIndex] = btn.textContent;
+    });
+  });
+  nextBtn.style.display = "block";
+}
+
+// --- Initialize Quiz ---
+async function initQuiz(){
+  questions = await generateQuiz(subject, gradeGroup, 5);
+  if(questions.length === 0){
+    container.innerHTML = "<p>Quiz not available. Try again later.</p>";
+    nextBtn.style.display = "none";
+    return;
+  }
+  showQuestion(currentQ);
+}
+
+// --- Handle Next Button ---
+nextBtn.addEventListener("click", async ()=>{
+  if(!userAnswers[currentQ]){ alert("Select an option!"); return; }
+  currentQ++;
+  if(currentQ < questions.length){
+    showQuestion(currentQ);
+  } else {
+    // Calculate score
+    let score = 0;
+    questions.forEach((q,i)=>{ if(q.answer === userAnswers[i]) score++; });
+
+    const total = questions.length;
+    const percentage = (score / total) * 100;
+    let learnerType = percentage < 50 ? "slow" : percentage < 80 ? "average" : "fast";
+
+    // Save results to Firebase & redirect
+    onAuthStateChanged(auth, async (user)=>{
+      if(user){
+        const userId = user.uid;
+        try{
+          await setDoc(doc(db, "users", userId), {
+            quizResults: arrayUnion({
+              subject, questions, answers: userAnswers,
+              score, learnerType, timestamp: new Date()
+            })
+          }, { merge: true });
+          window.location.href = `/modules?subject=${encodeURIComponent(subject)}&learner=${learnerType}`;
+        } catch(e){
+          console.error("Firebase save error:", e);
+          alert(`Quiz completed! Score: ${score}/${total}. Could not save.`);
+          window.location.href = `/modules?subject=${encodeURIComponent(subject)}&learner=${learnerType}`;
+        }
+      } else {
+        alert(`Quiz completed! Score: ${score}/${total}. Login to save results.`);
+        window.location.href = "/login";
+      }
+    });
+  }
+});
+
+initQuiz();
+</script>
+
+</body>
+</html>

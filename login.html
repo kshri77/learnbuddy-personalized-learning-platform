@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login — LearnBuddy</title>
+
+<script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+
+<style>
+:root { --accent:#4dabf7; --darkblue:#1E3A8A; }
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;height:100%;font-family:'Inter',sans-serif;background:#fff;color:var(--darkblue);}
+.fullscreen-container { display:flex; flex-direction:row; width:100%; height:100%; }
+.login-left { flex:1; display:flex; justify-content:center; align-items:center; }
+.login-right { flex:1; display:flex; flex-direction:column; justify-content:center; padding:48px 32px; }
+.login-right h2 { font-family:Poppins,sans-serif; font-size:48px; margin-bottom:24px; color:var(--darkblue); text-align:center; }
+.input-group { display:flex; flex-direction:column; margin-bottom:16px; }
+.input-group label { font-weight:600; margin-bottom:6px; color:var(--darkblue); }
+.input-group input { padding:12px 14px; border:2px solid var(--accent); border-radius:8px; font-size:16px; background:#fff; color:var(--darkblue); outline:none; transition:all 0.3s ease; }
+.input-group input:hover { border-color:var(--darkblue); box-shadow:0 4px 12px rgba(0,0,0,0.1); }
+.input-group input:focus { border-color:var(--darkblue); box-shadow:0 0 0 3px rgba(77,171,247,0.3); }
+.btn { padding: 10px 10px; border: 0; border-radius: 10px; width:300px; height:50px; background: var(--accent); color:#fff; font-weight: 700; font-size: 16px; cursor: pointer; margin:12px auto 0; display:block; transition: transform 0.2s; }
+.btn:hover { transform:scale(1.05); background:var(--darkblue); }
+.login-footer { text-align:center; margin-top:16px; font-size:14px; }
+.login-footer a { color:var(--accent); font-weight:600; text-decoration:none; }
+.login-footer a:hover { color:var(--darkblue); }
+@media (max-width:900px) { .fullscreen-container {flex-direction:column;} .login-left,.login-right { flex:unset; width:100%; height:50%; } }
+</style>
+</head>
+
+<body>
+
+<div class="fullscreen-container">
+  <div class="login-left">
+    <lottie-player 
+      src="{{ url_for('static', filename='lottie/login.json') }}" 
+      background="transparent" 
+      speed="1" 
+      style="width:500px;height:500px;" 
+      loop autoplay>
+    </lottie-player>
+  </div>
+
+  <div class="login-right">
+    <h2>Welcome Back 👋</h2>
+
+    <div class="input-group">
+      <label for="email">Email</label>
+      <input type="email" id="email" required>
+    </div>
+
+    <div class="input-group">
+      <label for="password">Password</label>
+      <input type="password" id="password" required>
+    </div>
+
+    <button type="button" class="btn" id="loginBtn">Login</button>
+
+    <div class="login-footer">
+      <p>Don’t have an account? <a href="{{ url_for('signup') }}">Sign Up</a></p>
+      <p><a href="#">Forgot Password?</a></p>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBY3vXosHcqGT1T6Jo4-0QhkusmM5a0Cyo",
+  authDomain: "learnbuddy-c0f4b.firebaseapp.com",
+  projectId: "learnbuddy-c0f4b",
+  storageBucket: "learnbuddy-c0f4b.firebasestorage.app",
+  messagingSenderId: "658794807805",
+  appId: "1:658794807805:web:319bc7ddee319359149994",
+  measurementId: "G-3CMN5FG3GQ"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+document.getElementById("loginBtn").addEventListener("click", async () => {
+  console.log("Login button clicked");
+
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value.trim();
+
+  if (!email || !password) {
+    alert("Please enter email and password.");
+    return;
+  }
+
+  try {
+    await signInWithEmailAndPassword(auth, email, password);
+    window.location.href = "{{ url_for('streams') }}";
+  } catch (err) {
+    console.error(err);
+    alert("Login failed: " + err.message);
+  }
+});
+</script>
+
+</body>
+</html>
