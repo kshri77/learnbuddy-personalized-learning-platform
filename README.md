@@ -19,7 +19,7 @@ Technology Stack
 
 Screenshots
 
-![App Screenshot](./assets/learnbuddy landing page.png)
+![App Screenshot](./assets/landingpage.png)
 
 🎥 Demo Video
 
