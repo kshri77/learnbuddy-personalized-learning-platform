@@ -1,0 +1,1197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Learning Modules — LearnBuddy</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+    :root {
+        --accent: #4dabf7;
+        --accent-light: #74c0fc;
+        --darkblue: #1E3A8A;
+        --primary: #4dabf7;
+        --primary-dark: #1E3A8A;
+        --primary-gradient: linear-gradient(135deg, #4dabf7 0%, #1E3A8A 100%);
+        --secondary: #f8fafc;
+        --success: #10b981;
+        --success-light: #d1fae5;
+        --warning: #f59e0b;
+        --warning-light: #fef3c7;
+        --danger: #ef4444;
+        --text: #1e293b;
+        --text-light: #64748b;
+        --text-muted: #94a3b8;
+        --white: #fff;
+        --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+        --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        --radius: 16px;
+        --radius-sm: 8px;
+        --radius-lg: 24px;
+    }
+
+    * { 
+        box-sizing: border-box; 
+        margin: 0;
+        padding: 0;
+    }
+
+    html {
+        scroll-behavior: smooth;
+    }
+
+    body {
+        font-family: 'Inter', sans-serif;
+        background: linear-gradient(180deg, #f0f9ff 0%, #ffffff 50%, #f0fdf4 100%);
+        color: var(--text);
+        min-height: 100vh;
+        position: relative;
+        overflow-x: hidden;
+    }
+
+    /* Decorative Background Elements */
+    body::before {
+        content: '';
+        position: fixed;
+        top: -50%;
+        right: -20%;
+        width: 60%;
+        height: 100%;
+        background: radial-gradient(circle, rgba(77, 171, 247, 0.08) 0%, transparent 70%);
+        pointer-events: none;
+        z-index: -1;
+    }
+
+    body::after {
+        content: '';
+        position: fixed;
+        bottom: -30%;
+        left: -20%;
+        width: 50%;
+        height: 80%;
+        background: radial-gradient(circle, rgba(16, 185, 129, 0.06) 0%, transparent 70%);
+        pointer-events: none;
+        z-index: -1;
+    }
+
+    /* Header Styles */
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 16px 40px;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.1);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        border-bottom: 1px solid rgba(77, 171, 247, 0.1);
+    }
+
+    .logo {
+        display: flex;
+        align-items: center;
+        font-family: 'Poppins', sans-serif;
+        font-weight: 800;
+        font-size: 26px;
+        background: var(--primary-gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        gap: 10px;
+    }
+
+    .logo i {
+        background: var(--primary-gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-size: 30px;
+    }
+
+    .nav-links {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+    }
+
+    .nav-links a {
+        text-decoration: none;
+        color: var(--text);
+        font-weight: 500;
+        padding: 10px 18px;
+        border-radius: 12px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+    }
+
+    .nav-links a:hover {
+        background: rgba(77, 171, 247, 0.1);
+        color: var(--primary);
+    }
+
+    .nav-links a.active {
+        background: var(--primary-gradient);
+        color: white;
+    }
+
+    .user-profile {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        background: linear-gradient(135deg, rgba(77, 171, 247, 0.1) 0%, rgba(30, 58, 138, 0.1) 100%);
+        padding: 8px 16px 8px 8px;
+        border-radius: 50px;
+        margin-left: 16px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+    }
+
+    .user-profile:hover {
+        border-color: var(--primary);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow);
+    }
+
+    .user-profile img {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid var(--primary);
+    }
+
+    .user-profile span {
+        font-weight: 600;
+        color: var(--primary-dark);
+    }
+
+    /* Main Content Styles */
+    .container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 40px 20px 100px;
+    }
+
+    .page-header {
+        text-align: center;
+        margin-bottom: 50px;
+    }
+
+    h1 {
+        color: var(--primary-dark);
+        font-family: 'Poppins', sans-serif;
+        font-weight: 800;
+        font-size: 2.8rem;
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 15px;
+    }
+
+    h1 i {
+        background: var(--primary-gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .page-subtitle {
+        color: var(--text-light);
+        font-size: 1.1rem;
+        max-width: 500px;
+        margin: 0 auto;
+    }
+
+    /* Progress Stats */
+    .progress-stats {
+        display: flex;
+        justify-content: center;
+        gap: 30px;
+        margin-bottom: 40px;
+        flex-wrap: wrap;
+    }
+
+    .stat-card {
+        background: var(--white);
+        padding: 20px 30px;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        border: 1px solid rgba(77, 171, 247, 0.1);
+    }
+
+    .stat-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.3rem;
+    }
+
+    .stat-icon.completed {
+        background: var(--success-light);
+        color: var(--success);
+    }
+
+    .stat-icon.total {
+        background: rgba(77, 171, 247, 0.15);
+        color: var(--primary);
+    }
+
+    .stat-icon.progress {
+        background: var(--warning-light);
+        color: var(--warning);
+    }
+
+    .stat-info h3 {
+        font-size: 1.8rem;
+        color: var(--text);
+        margin-bottom: 2px;
+    }
+
+    .stat-info p {
+        font-size: 0.85rem;
+        color: var(--text-light);
+        margin: 0;
+    }
+
+    /* Modules Grid */
+    #modulesGrid {
+        display: flex;
+        flex-direction: column;
+        gap: 25px;
+    }
+
+    /* Module Card */
+    .module-card {
+        background: var(--white);
+        border-radius: var(--radius-lg);
+        padding: 0;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: var(--shadow);
+        position: relative;
+        overflow: hidden;
+        border: 2px solid transparent;
+    }
+
+    .module-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 5px;
+        background: var(--primary-gradient);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .module-card:hover:not(.locked) {
+        transform: translateY(-8px);
+        box-shadow: var(--shadow-xl);
+        border-color: var(--primary);
+    }
+
+    .module-card:hover:not(.locked)::before {
+        opacity: 1;
+    }
+
+    .module-card.unlocked {
+        border-color: rgba(77, 171, 247, 0.3);
+    }
+
+    .module-card.unlocked::before {
+        opacity: 1;
+    }
+
+    .module-card.locked {
+        opacity: 0.6;
+        pointer-events: none;
+        position: relative;
+        background: #f8fafc;
+        border-color: #e2e8f0;
+    }
+
+    .module-card.locked::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, rgba(255,255,255,0.8) 0%, rgba(248,250,252,0.9) 100%);
+        backdrop-filter: blur(3px);
+        z-index: 5;
+    }
+
+    .locked-overlay {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 10;
+        text-align: center;
+    }
+
+    .locked-overlay i {
+        font-size: 3rem;
+        color: var(--text-muted);
+        margin-bottom: 10px;
+        display: block;
+    }
+
+    .locked-overlay span {
+        font-weight: 600;
+        color: var(--text-light);
+        font-size: 1.1rem;
+    }
+
+    .module-card.completed {
+        border-color: var(--success);
+        background: linear-gradient(135deg, rgba(16, 185, 129, 0.02) 0%, rgba(255, 255, 255, 1) 100%);
+    }
+
+    .module-card.completed::before {
+        background: linear-gradient(135deg, var(--success) 0%, #059669 100%);
+        opacity: 1;
+    }
+
+    /* Module Number Badge */
+    .module-number {
+        position: absolute;
+        top: 20px;
+        left: -10px;
+        background: var(--primary-gradient);
+        color: white;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 1.3rem;
+        box-shadow: var(--shadow-lg);
+        z-index: 4;
+    }
+
+    .module-card.completed .module-number {
+        background: linear-gradient(135deg, var(--success) 0%, #059669 100%);
+    }
+
+    .module-card.locked .module-number {
+        background: linear-gradient(135deg, #94a3b8 0%, #64748b 100%);
+    }
+
+    /* Module Inner Content */
+    .module-inner {
+        padding: 25px 30px 25px 55px;
+    }
+
+    .module-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        margin-bottom: 20px;
+        gap: 15px;
+    }
+
+    .module-header h2 {
+        margin: 0;
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--primary-dark);
+        flex: 1;
+        line-height: 1.3;
+    }
+
+    .module-status {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 14px;
+        border-radius: 50px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    .status-unlocked {
+        background: rgba(77, 171, 247, 0.15);
+        color: var(--primary);
+    }
+
+    .status-completed {
+        background: var(--success-light);
+        color: var(--success);
+    }
+
+    .status-locked {
+        background: #f1f5f9;
+        color: var(--text-muted);
+    }
+
+    /* Content Sections */
+    .module-content {
+        margin-bottom: 20px;
+    }
+
+    .content-section {
+        margin-bottom: 20px;
+    }
+
+    .content-section h3 {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: var(--primary-dark);
+        font-size: 1rem;
+        font-weight: 600;
+        margin-bottom: 10px;
+        padding-bottom: 8px;
+        border-bottom: 2px solid rgba(77, 171, 247, 0.15);
+    }
+
+    .content-section h3 i {
+        width: 28px;
+        height: 28px;
+        background: rgba(77, 171, 247, 0.1);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.85rem;
+        color: var(--primary);
+    }
+
+    .content-section p {
+        color: var(--text-light);
+        line-height: 1.7;
+        font-size: 0.95rem;
+    }
+
+    /* Examples Box */
+    .examples {
+        background: linear-gradient(135deg, rgba(77, 171, 247, 0.08) 0%, rgba(16, 185, 129, 0.05) 100%);
+        padding: 20px;
+        border-radius: var(--radius);
+        margin: 15px 0;
+        border-left: 4px solid var(--primary);
+    }
+
+    .examples h4 {
+        margin: 0 0 12px 0;
+        color: var(--primary-dark);
+        font-size: 0.95rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .examples h4 i {
+        color: var(--warning);
+    }
+
+    .examples ul {
+        padding-left: 20px;
+        margin: 0;
+    }
+
+    .examples li {
+        margin: 8px 0;
+        color: var(--text-light);
+        line-height: 1.6;
+        position: relative;
+    }
+
+    .examples li::marker {
+        color: var(--primary);
+    }
+
+    /* Videos Section */
+    .videos-section {
+        margin-top: 25px;
+    }
+
+    .videos-section h3 {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: var(--primary-dark);
+        font-size: 1rem;
+        font-weight: 600;
+        margin-bottom: 15px;
+    }
+
+    .videos-section h3 i {
+        color: #ef4444;
+    }
+
+    .videos {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 20px;
+    }
+
+    .video-frame {
+        background: var(--white);
+        border-radius: var(--radius);
+        overflow: hidden;
+        box-shadow: var(--shadow);
+        transition: all 0.3s ease;
+        border: 1px solid #e2e8f0;
+    }
+
+    .video-frame:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-lg);
+        border-color: var(--primary);
+    }
+
+    iframe {
+        width: 100%;
+        height: 170px;
+        border: none;
+    }
+
+    .video-info {
+        padding: 15px;
+        background: var(--white);
+        border-top: 1px solid #f1f5f9;
+    }
+
+    .video-info p {
+        margin: 0 0 5px 0;
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--text);
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .video-info small {
+        color: var(--text-muted);
+        font-size: 0.8rem;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .video-info small i {
+        color: #ef4444;
+    }
+
+    /* Module Actions */
+    .module-actions {
+        display: flex;
+        justify-content: flex-end;
+        padding-top: 20px;
+        border-top: 1px solid #f1f5f9;
+        margin-top: 20px;
+    }
+
+    button {
+        padding: 14px 28px;
+        border: none;
+        border-radius: 12px;
+        background: var(--primary-gradient);
+        color: var(--white);
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 0.95rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    button::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        transition: left 0.5s ease;
+    }
+
+    button:hover::before {
+        left: 100%;
+    }
+
+    button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 20px rgba(77, 171, 247, 0.3);
+    }
+
+    button:disabled {
+        background: linear-gradient(135deg, #94a3b8 0%, #64748b 100%);
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+    }
+
+    button i {
+        font-size: 1rem;
+    }
+
+    .btn-complete {
+        background: linear-gradient(135deg, var(--success) 0%, #059669 100%);
+    }
+
+    .btn-complete:hover {
+        box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3);
+    }
+
+    /* Progress Bar */
+    .progress-container {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        padding: 15px 30px;
+        box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+        z-index: 50;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .progress-label {
+        font-weight: 600;
+        color: var(--primary-dark);
+        white-space: nowrap;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .progress-label i {
+        color: var(--primary);
+    }
+
+    .progress-bar {
+        flex: 1;
+        height: 12px;
+        background: #e2e8f0;
+        border-radius: 20px;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .progress {
+        height: 100%;
+        background: linear-gradient(90deg, var(--primary) 0%, var(--success) 100%);
+        width: 0%;
+        transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        border-radius: 20px;
+        position: relative;
+    }
+
+    .progress::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+        animation: shimmer 2s infinite;
+    }
+
+    @keyframes shimmer {
+        0% { transform: translateX(-100%); }
+        100% { transform: translateX(100%); }
+    }
+
+    .progress-percentage {
+        font-weight: 700;
+        color: var(--primary-dark);
+        min-width: 50px;
+        text-align: right;
+    }
+
+    /* Confetti */
+    .confetti {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 1000;
+        display: none;
+    }
+
+    /* Loading State */
+    .loading-state {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 80px 20px;
+        text-align: center;
+    }
+
+    .loading-spinner {
+        width: 60px;
+        height: 60px;
+        border: 4px solid #e2e8f0;
+        border-top-color: var(--primary);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-bottom: 20px;
+    }
+
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+
+    .loading-state p {
+        color: var(--text-light);
+        font-size: 1.1rem;
+    }
+
+    /* Error State */
+    .error-state {
+        background: linear-gradient(135deg, rgba(239, 68, 68, 0.05) 0%, rgba(255, 255, 255, 1) 100%);
+        border: 2px solid rgba(239, 68, 68, 0.2);
+        border-radius: var(--radius-lg);
+        padding: 40px;
+        text-align: center;
+    }
+
+    .error-state i {
+        font-size: 3rem;
+        color: var(--danger);
+        margin-bottom: 15px;
+    }
+
+    .error-state p {
+        color: var(--text-light);
+        font-size: 1.1rem;
+    }
+
+    /* Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+    }
+
+    .empty-state i {
+        font-size: 4rem;
+        color: var(--text-muted);
+        margin-bottom: 20px;
+    }
+
+    .empty-state p {
+        color: var(--text-light);
+        font-size: 1.1rem;
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .module-card {
+        animation: fadeInUp 0.5s ease forwards;
+    }
+
+    .module-card:nth-child(1) { animation-delay: 0.1s; }
+    .module-card:nth-child(2) { animation-delay: 0.2s; }
+    .module-card:nth-child(3) { animation-delay: 0.3s; }
+    .module-card:nth-child(4) { animation-delay: 0.4s; }
+    .module-card:nth-child(5) { animation-delay: 0.5s; }
+
+    /* Responsive Styles */
+    @media (max-width: 900px) {
+        .header {
+            flex-direction: column;
+            gap: 16px;
+            padding: 16px 20px;
+        }
+
+        .nav-links {
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        h1 {
+            font-size: 2rem;
+        }
+
+        .module-inner {
+            padding: 20px;
+        }
+
+        .module-number {
+            position: relative;
+            top: 0;
+            left: 0;
+            margin-bottom: 15px;
+        }
+
+        .progress-stats {
+            gap: 15px;
+        }
+
+        .stat-card {
+            padding: 15px 20px;
+        }
+    }
+
+    @media (max-width: 600px) {
+        .container {
+            padding: 20px 15px 100px;
+        }
+
+        h1 {
+            font-size: 1.6rem;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .module-header {
+            flex-direction: column;
+        }
+
+        .videos {
+            grid-template-columns: 1fr;
+        }
+
+        .progress-container {
+            flex-wrap: wrap;
+            gap: 10px;
+            padding: 12px 20px;
+        }
+
+        .progress-label {
+            width: 100%;
+            text-align: center;
+            justify-content: center;
+        }
+
+        .stat-card {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
+</head>
+<body>
+    <!-- LearnBuddy Header -->
+    <header class="header">
+        <div class="logo">
+            <i class="fas fa-graduation-cap"></i>
+            <span>LearnBuddy</span>
+        </div>
+        <nav class="nav-links">
+            <a href="{{ url_for('streams') }}">
+                <i class="fas fa-stream"></i> Streams
+            </a>
+            <a href="{{ url_for('quiz') }}">
+                <i class="fas fa-question-circle"></i> Quizzes
+            </a>
+            <a href="{{ url_for('modules_page') }}" class="active">
+                <i class="fas fa-book-open"></i> Modules
+            </a>
+            <div class="user-profile">
+                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=user123" alt="User">
+                <span>Hi, User!</span>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="page-header">
+            <h1>
+                <i class="fas fa-book-open"></i>
+                Learning Modules
+            </h1>
+            <p class="page-subtitle">Master each concept step by step. Complete modules to unlock the next level!</p>
+        </div>
+
+        <div class="progress-stats" id="progressStats">
+            <div class="stat-card">
+                <div class="stat-icon completed">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="stat-info">
+                    <h3 id="completedCount">0</h3>
+                    <p>Completed</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon total">
+                    <i class="fas fa-layer-group"></i>
+                </div>
+                <div class="stat-info">
+                    <h3 id="totalCount">0</h3>
+                    <p>Total Modules</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon progress">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="stat-info">
+                    <h3 id="progressPercent">0%</h3>
+                    <p>Progress</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="modulesGrid">
+            <div class="loading-state">
+                <div class="loading-spinner"></div>
+                <p>Loading your learning modules...</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="progress-container">
+        <div class="progress-label">
+            <i class="fas fa-rocket"></i>
+            Your Progress
+        </div>
+        <div class="progress-bar">
+            <div class="progress" id="progress"></div>
+        </div>
+        <div class="progress-percentage" id="progressText">0%</div>
+    </div>
+
+    <div class="confetti" id="confetti"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const subject = urlParams.get("subject") || "Science";
+        const gradeGroup = urlParams.get("gradeGroup") || "11-12";
+        const score = parseInt(urlParams.get("score")) || 0;
+        let modules = [];
+
+        // Load modules from backend
+        async function loadModules() {
+            try {
+                const res = await fetch("/generate-modules", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ subject, grade: gradeGroup, score })
+                });
+                const data = await res.json();
+                modules = data.modules || data;
+                renderModules(modules);
+                updateProgress();
+            } catch(err) {
+                console.error(err);
+                document.getElementById("modulesGrid").innerHTML = `
+                    <div class="error-state">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <p>Failed to load modules. Please try again later.</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Render modules in top-down order
+        function renderModules(modules) {
+            const grid = document.getElementById("modulesGrid");
+            grid.innerHTML = "";
+            if (!modules || modules.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-inbox"></i>
+                        <p>No modules available at the moment.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            modules.forEach((mod, idx) => {
+                mod.status = mod.status || (idx === 0 ? "unlocked" : "locked");
+                const card = document.createElement("div");
+                card.className = `module-card ${mod.status}`;
+                card.style.animationDelay = `${idx * 0.1}s`;
+                
+                const statusBadge = mod.status === 'completed' 
+                    ? '<span class="module-status status-completed"><i class="fas fa-check-circle"></i> Completed</span>'
+                    : mod.status === 'unlocked' 
+                    ? '<span class="module-status status-unlocked"><i class="fas fa-unlock"></i> In Progress</span>'
+                    : '<span class="module-status status-locked"><i class="fas fa-lock"></i> Locked</span>';
+
+                const buttonClass = mod.status === 'completed' ? '' : 'btn-complete';
+                const buttonText = mod.status === 'completed' 
+                    ? '<i class="fas fa-redo"></i> Review Module'
+                    : '<i class="fas fa-check"></i> Complete Module';
+
+                card.innerHTML = `
+                    <div class="module-number">${mod.module_number || idx + 1}</div>
+                    ${mod.status === 'locked' ? `
+                        <div class="locked-overlay">
+                            <i class="fas fa-lock"></i>
+                            <span>Complete previous module to unlock</span>
+                        </div>
+                    ` : ''}
+                    <div class="module-inner">
+                        <div class="module-header">
+                            <h2>${mod.topic || "Untitled Module"}</h2>
+                            ${statusBadge}
+                        </div>
+                        <div class="module-content">
+                            <div class="content-section">
+                                <h3><i class="fas fa-bullseye"></i> Learning Objective</h3>
+                                <p>${mod.learning_objective}</p>
+                            </div>
+
+                            <div class="content-section">
+                                <h3><i class="fas fa-info-circle"></i> Explanation</h3>
+                                <p>${mod.textual_explanation}</p>
+                            </div>
+
+                            <div class="examples">
+                                <h4><i class="fas fa-lightbulb"></i> Real-World Examples</h4>
+                                <ul>
+                                    ${mod.real_world_examples ? mod.real_world_examples.map(example => `<li>${example}</li>`).join('') : '<li>No examples available.</li>'}
+                                </ul>
+                            </div>
+
+                            <div class="content-section">
+                                <h3><i class="fas fa-tasks"></i> Interactive Task</h3>
+                                <p>${mod.interactive_task}</p>
+                            </div>
+                        </div>
+
+                        <div class="videos-section">
+                            <h3><i class="fab fa-youtube"></i> Video Resources</h3>
+                            <div class="videos">
+                                ${mod.youtube_videos ? mod.youtube_videos.map(v => `
+                                    <div class="video-frame">
+                                        <iframe src="${v.embed_url}" allowfullscreen></iframe>
+                                        <div class="video-info">
+                                            <p>${v.title}</p>
+                                            <small><i class="fab fa-youtube"></i> ${v.channel}</small>
+                                        </div>
+                                    </div>
+                                `).join('') : '<p style="color: var(--text-muted);">No videos available for this module.</p>'}
+                            </div>
+                        </div>
+
+                        <div class="module-actions">
+                            <button class="${buttonClass}" ${mod.status === 'locked' ? 'disabled' : ''} onclick="completeModule(${idx})">
+                                ${mod.status === 'locked' ? '<i class="fas fa-lock"></i> Locked' : buttonText}
+                            </button>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // Complete module, unlock next, and redirect after all modules are completed
+        function completeModule(idx) {
+            modules[idx].status = 'completed';
+            if (idx + 1 < modules.length) {
+                modules[idx + 1].status = 'unlocked';
+            }
+            renderModules(modules);
+            updateProgress();
+            triggerConfetti();
+
+            // Scroll to next module
+            if (idx + 1 < modules.length) {
+                setTimeout(() => {
+                    const nextCard = document.querySelectorAll('.module-card')[idx + 1];
+                    if (nextCard) {
+                        nextCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                }, 500);
+            }
+
+            // Check if all modules are completed
+            const allCompleted = modules.every(mod => mod.status === 'completed');
+if (allCompleted) {
+    setTimeout(() => {
+        window.location.href = `/final-assessment?subject=${subject}&gradeGroup=${gradeGroup}&score=${score}`;
+    }, 2000);
+}
+        }
+
+        // Update progress bar
+        function updateProgress() {
+            const completed = modules.filter(mod => mod.status === 'completed').length;
+            const total = modules.length;
+            const progress = total > 0 ? (completed / total) * 100 : 0;
+            
+            document.getElementById('progress').style.width = `${progress}%`;
+            document.getElementById('progressText').textContent = `${Math.round(progress)}%`;
+            document.getElementById('completedCount').textContent = completed;
+            document.getElementById('totalCount').textContent = total;
+            document.getElementById('progressPercent').textContent = `${Math.round(progress)}%`;
+        }
+
+        // Trigger confetti animation
+        function triggerConfetti() {
+            const confettiElement = document.getElementById('confetti');
+            confettiElement.style.display = 'block';
+            
+            // Multiple bursts for better effect
+            confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.6 }
+            });
+            
+            setTimeout(() => {
+                confetti({
+                    particleCount: 50,
+                    angle: 60,
+                    spread: 55,
+                    origin: { x: 0 }
+                });
+                confetti({
+                    particleCount: 50,
+                    angle: 120,
+                    spread: 55,
+                    origin: { x: 1 }
+                });
+            }, 250);
+
+            setTimeout(() => {
+                confettiElement.style.display = 'none';
+            }, 3000);
+        }
+
+        // Initialize
+        window.onload = loadModules;
+    </script>
+</body>
+</html>

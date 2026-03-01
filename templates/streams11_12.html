@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LearnBuddy — 11-12 Subjects</title>
+<script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root {--primary:#4dabf7;--darkblue:#1E3A8A;--card-bg:#f0f8ff;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',sans-serif;background:#fff;color:var(--darkblue);}
+.header {display:flex;align-items:center;justify-content:space-between;padding:20px 40px;background:var(--primary);color:#fff;box-shadow:0 4px 10px rgba(0,0,0,0.1);}
+.header .logo {font-weight:700;font-size:24px;display:flex;align-items:center;gap:10px;}
+.header .tagline {font-size:14px;}
+.container{max-width:900px;margin:50px auto;padding:20px;text-align:center;}
+h2{font-family:'Poppins',sans-serif;font-size:36px;margin-bottom:30px;}
+.subject-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:20px;justify-items:center;}
+.subject-card{background:var(--card-bg);border:2px solid var(--primary);border-radius:12px;padding:30px 20px;width:160px;height:160px;cursor:pointer;font-weight:600;font-size:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:all 0.3s ease;text-align:center;}
+.subject-card:hover{transform:translateY(-8px) scale(1.05);border-color:var(--darkblue);box-shadow:0 8px 20px rgba(0,0,0,0.15);}
+.subject-card.selected{background:var(--primary);color:#fff;border-color:var(--darkblue);}
+.subject-card i{font-size:36px;margin-bottom:10px;color:var(--primary);}
+.subject-card.selected i{color:#fff;}
+.btn-next{margin-top:40px;padding:12px 24px;font-size:18px;font-weight:700;border:none;border-radius:10px;background:var(--primary);color:#fff;cursor:pointer;transition:transform 0.2s, background 0.2s;}
+.btn-next:hover{transform:scale(1.05);background:var(--darkblue);}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">
+    <lottie-player src="{{ url_for('static', filename='lottie/girl.json') }}" background="transparent" speed="1" style="width:40px;height:40px;" loop autoplay></lottie-player>
+    LearnBuddy
+  </div>
+  <div class="tagline">Personalized learning, simplified</div>
+</div>
+
+<div class="container">
+  <h2 id="pageTitle">Select Your Subjects</h2>
+  <div class="subject-grid" id="subjectGrid"></div>
+  <button class="btn-next">Next</button>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-app.js";
+import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-firestore.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-auth.js";
+
+// --- Firebase config ---
+const firebaseConfig = {
+  apiKey: "AIzaSyBY3vXosHcqGT1T6Jo4-0QhkusmM5a0Cyo",
+  authDomain: "learnbuddy-c0f4b.firebaseapp.com",
+  projectId: "learnbuddy-c0f4b",
+  storageBucket: "learnbuddy-c0f4b.appspot.com",
+  messagingSenderId: "658794807805",
+  appId: "1:658794807805:web:319bc7ddee319359149994",
+  measurementId: "G-3CMN5FG3GQ"
+};
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+
+// --- Stream-subject mapping ---
+const streamSubjects = {
+  "PCB":[
+    {name:"Physics", icon:"⚛️"},
+    {name:"Chemistry", icon:"🧪"},
+    {name:"Biology", icon:"🧬"},
+    {name:"Mathematics", icon:"📐"},
+    {name:"English", icon:"📝"}
+  ],
+  "PCM":[
+    {name:"Physics", icon:"⚛️"},
+    {name:"Chemistry", icon:"🧪"},
+    {name:"Mathematics", icon:"📐"},
+    {name:"Computer Science", icon:"💻"},
+    {name:"English", icon:"📝"}
+  ],
+  "Commerce":[
+    {name:"Accountancy", icon:"📒"},
+    {name:"Economics", icon:"💰"},
+    {name:"Business Studies", icon:"🏢"},
+    {name:"Mathematics", icon:"📐"},
+    {name:"English", icon:"📝"}
+  ],
+  "Humanities/Arts":[
+    {name:"History", icon:"🏰"},
+    {name:"Political Science", icon:"⚖️"},
+    {name:"Geography", icon:"🌏"},
+    {name:"English", icon:"📝"}
+  ]
+};
+
+// --- Auth & User check ---
+onAuthStateChanged(auth, async (user) => {
+  if(!user){ window.location.href="{{ url_for('login') }}"; return; }
+  const userId = user.uid;
+  const userSnap = await getDoc(doc(db,"users",userId));
+  const userData = userSnap.exists()?userSnap.data():null;
+
+  if(!userData || !userData.stream){
+    alert("No stream selected! Redirecting to stream selection.");
+    window.location.href="{{ url_for('streams') }}";
+    return;
+  }
+
+  // Populate subject cards
+  const subjectGrid = document.getElementById("subjectGrid");
+  streamSubjects[userData.stream].forEach(subj => {
+    const card = document.createElement("div");
+    card.classList.add("subject-card");
+    card.dataset.name = subj.name;
+    card.innerHTML = `<i>${subj.icon}</i>${subj.name}`;
+    subjectGrid.appendChild(card);
+  });
+
+  // Selection logic
+  let selectedSubject = "";
+  subjectGrid.addEventListener("click", e => {
+    const card = e.target.closest(".subject-card");
+    if(!card) return;
+    document.querySelectorAll(".subject-card").forEach(c => c.classList.remove('selected'));
+    card.classList.add('selected');
+    selectedSubject = card.dataset.name;
+  });
+
+  // Next button
+  document.querySelector(".btn-next").addEventListener("click", async () => {
+    if(!selectedSubject){
+      alert("Please select a subject!");
+      return;
+    }
+    await updateDoc(doc(db,"users",userId), {subjects:[selectedSubject]});
+    window.location.href = "{{ url_for('quiz') }}?subject=" + encodeURIComponent(selectedSubject);
+  });
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LearnBuddy — Select Subjects / Stream</title>
+<script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root { --primary:#4dabf7; --darkblue:#1E3A8A; --card-bg:#f0f8ff; }
+*{box-sizing:border-box;}
+body{margin:0;padding:0;font-family:'Inter',sans-serif;background:#fff;color:var(--darkblue);}
+.header { width:100%; padding:20px 40px; background:var(--primary); color:#fff; display:flex; align-items:center; justify-content:space-between; }
+.header .logo { font-weight:700; font-size:24px; }
+.header .tagline { font-size:14px; }
+.container { max-width:900px; margin:50px auto; padding:20px; text-align:center; }
+h2 { font-family:'Poppins',sans-serif; font-size:36px; margin-bottom:30px; }
+.card-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:20px; justify-items:center; }
+.card { background: var(--card-bg); border:2px solid var(--primary); border-radius:12px; padding:30px 20px; cursor:pointer; transition:all 0.3s ease; font-weight:600; font-size:18px; display:flex; flex-direction:column; align-items:center; justify-content:center; width:160px; height:160px; text-align:center; }
+.card:hover { transform:translateY(-8px) scale(1.05); border-color:var(--darkblue); box-shadow:0 8px 20px rgba(0,0,0,0.15); }
+.card.selected { background: var(--darkblue); color: #fff; border-color: var(--darkblue); }
+.card i { font-size:36px; margin-bottom:10px; color:var(--primary); }
+.card.selected i { color: #fff; }
+.btn-next { margin-top:40px; padding:12px 24px; font-size:18px; font-weight:700; border:none; border-radius:10px; background:var(--primary); color:#fff; cursor:pointer; }
+.btn-next:hover { background:var(--darkblue); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div style="display:flex;align-items:center;gap:10px;">
+    <lottie-player src="{{ url_for('static', filename='lottie/girl.json') }}" background="transparent" speed="1" style="width:40px;height:40px;" loop autoplay></lottie-player>
+    <div class="logo">LearnBuddy</div>
+  </div>
+  <div class="tagline">Personalized learning, simplified</div>
+</div>
+
+<div class="container">
+  <h2 id="pageTitle">Select Your Subjects / Stream</h2>
+  <div class="card-grid" id="cardGrid"></div>
+  <button class="btn-next">Next</button>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-app.js";
+import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-firestore.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-auth.js";
+
+// --- Firebase config ---
+const firebaseConfig = {
+  apiKey: "AIzaSyBY3vXosHcqGT1T6Jo4-0QhkusmM5a0Cyo",
+  authDomain: "learnbuddy-c0f4b.firebaseapp.com",
+  projectId: "learnbuddy-c0f4b",
+  storageBucket: "learnbuddy-c0f4b.appspot.com",
+  messagingSenderId: "658794807805",
+  appId: "1:658794807805:web:319bc7ddee319359149994",
+  measurementId: "G-3CMN5FG3GQ"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+
+const data = {
+  "1-5": [
+    {name:"Mathematics", icon:"📐"},
+    {name:"Science", icon:"🧪"},
+    {name:"English", icon:"📝"}
+  ],
+  "6-10": [
+    {name:"Mathematics", icon:"📐"},
+    {name:"Physics", icon:"⚛️"},
+    {name:"Chemistry", icon:"🧪"},
+    {name:"Biology", icon:"🧬"}
+  ],
+  "11-12": [
+    {name:"PCB", icon:"🧬"},
+    {name:"PCM", icon:"💻"},
+    {name:"Commerce", icon:"💰"},
+    {name:"Humanities/Arts", icon:"🎭"}
+  ]
+};
+
+// --- Auth Listener ---
+onAuthStateChanged(auth, async (user) => {
+  if(!user){ window.location.href="{{ url_for('login') }}"; return; }
+  const userId = user.uid;
+  const userSnap = await getDoc(doc(db, "users", userId));
+  const userData = userSnap.exists()?userSnap.data():{gradeGroup:"11-12"};
+
+  const subjects = data[userData.gradeGroup];
+  if(!subjects){ alert("Unsupported grade"); return; }
+
+  const pageTitle = document.getElementById("pageTitle");
+  pageTitle.innerText = (userData.gradeGroup==="11-12")?"Select Your Stream":"Select Your Subjects";
+
+  const cardGrid = document.getElementById("cardGrid");
+  subjects.forEach(item=>{
+    const card=document.createElement("div");
+    card.classList.add("card");
+    card.dataset.name=item.name;
+    card.innerHTML=`<i>${item.icon}</i>${item.name}`;
+    cardGrid.appendChild(card);
+  });
+
+  let selectedItem="";
+  cardGrid.addEventListener("click",e=>{
+    const card = e.target.closest(".card");
+    if(!card) return;
+    document.querySelectorAll(".card").forEach(c=>c.classList.remove("selected"));
+    card.classList.add("selected");
+    selectedItem = card.dataset.name;
+  });
+
+  document.querySelector(".btn-next").addEventListener("click", async ()=>{
+    if(!selectedItem){ alert("Please select!"); return; }
+    if(userData.gradeGroup==="11-12"){
+      await setDoc(doc(db,"users",userId),{stream:selectedItem},{merge:true});
+      window.location.href="{{ url_for('streams11_12') }}";
+    } else {
+      await setDoc(doc(db,"users",userId),{subjects:[selectedItem]},{merge:true});
+      window.location.href="{{ url_for('quiz') }}?subject=" + encodeURIComponent(selectedItem);
+    }
+  });
+});
+</script>
+
+</body>
+</html>

@@ -1,1 +1,1724 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LearnBuddy — Personalized Learning</title>
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --radius: 16px;
+            --radius-sm: 10px;
+            --radius-lg: 24px;
+            --max-w: 1200px;
+            --accent: #ff6b6b;
+            --accent-2: #10b981;
+            --accent-3: #fbbf24;
+            --accent-4: #4dabf7;
+            --primary: #4dabf7;
+            --primary-dark: #1E3A8A;
+            --primary-gradient: linear-gradient(135deg, #4dabf7 0%, #1E3A8A 100%);
+            --warm-gradient: linear-gradient(135deg, #ff6b6b 0%, #fbbf24 100%);
+            --cool-gradient: linear-gradient(135deg, #10b981 0%, #4dabf7 100%);
+            --bg: #ffffff;
+            --bg-secondary: #f8fafc;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --text-muted: #94a3b8;
+            --white: #ffffff;
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
 
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Decorative Background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 60%;
+            height: 100%;
+            background: radial-gradient(ellipse at top right, rgba(77, 171, 247, 0.08) 0%, transparent 60%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 50%;
+            height: 60%;
+            background: radial-gradient(ellipse at bottom left, rgba(16, 185, 129, 0.06) 0%, transparent 60%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .container {
+            max-width: var(--max-w);
+            margin: 0 auto;
+            padding: 0 32px;
+        }
+
+        a {
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        /* Header */
+        header {
+            position: sticky;
+            top: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            z-index: 100;
+            border-bottom: 1px solid rgba(30, 58, 138, 0.1);
+            padding: 0;
+        }
+
+        .container.nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 32px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .brand-name {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 800;
+            font-size: 26px;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .brand-tagline {
+            font-size: 13px;
+            color: var(--text-light);
+            font-weight: 500;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-links a:not(.btn):not(.btn-ghost) {
+            color: var(--text);
+            font-weight: 500;
+            padding: 10px 16px;
+            border-radius: var(--radius-sm);
+            position: relative;
+        }
+
+        .nav-links a:not(.btn):not(.btn-ghost):hover {
+            color: var(--primary);
+            background: rgba(77, 171, 247, 0.08);
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: var(--radius-sm);
+            border: 0;
+            background: var(--primary-gradient);
+            color: var(--white);
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(77, 171, 247, 0.3);
+        }
+
+        .btn-ghost {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            padding: 10px 22px;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-ghost:hover {
+            background: var(--primary);
+            color: var(--white);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(77, 171, 247, 0.2);
+        }
+
+        /* HERO */
+        .hero-section {
+            padding: 80px 0 100px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(77, 171, 247, 0.1) 100%);
+            border-radius: 50px;
+            margin-bottom: 24px;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .hero-badge span {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--accent-2);
+        }
+
+        .hero-badge i {
+            color: var(--accent-2);
+        }
+
+        .hero h1 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 56px;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 24px;
+            color: var(--primary-dark);
+        }
+
+        .hero h1 .highlight {
+            background: var(--warm-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero h1 .emoji {
+            display: inline-block;
+            animation: wave 2s ease-in-out infinite;
+        }
+
+        @keyframes wave {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(20deg); }
+            75% { transform: rotate(-20deg); }
+        }
+
+        .hero-description {
+            font-size: 18px;
+            color: var(--text-light);
+            margin-bottom: 32px;
+            max-width: 500px;
+            line-height: 1.7;
+        }
+
+        .hero-ctas {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 48px;
+        }
+
+        .hero-ctas .btn {
+            padding: 16px 32px;
+            font-size: 16px;
+        }
+
+        .hero-ctas .btn-ghost {
+            padding: 14px 30px;
+            font-size: 16px;
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 40px;
+        }
+
+        .stat-item {
+            text-align: left;
+        }
+
+        .stat-number {
+            font-family: 'Poppins', sans-serif;
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--primary-dark);
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: var(--text-light);
+        }
+
+        .hero-visual {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hero-visual::before {
+            content: '';
+            position: absolute;
+            width: 450px;
+            height: 450px;
+            background: radial-gradient(circle, rgba(77, 171, 247, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            z-index: 0;
+        }
+
+        .hero-visual lottie-player {
+            position: relative;
+            z-index: 1;
+            filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.1));
+        }
+
+        /* Floating Elements */
+        .floating-elements {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .floating-icon {
+            position: absolute;
+            font-size: 32px;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .floating-icon:nth-child(1) { top: 10%; left: 5%; animation-delay: 0s; }
+        .floating-icon:nth-child(2) { top: 20%; right: 10%; animation-delay: 1s; }
+        .floating-icon:nth-child(3) { bottom: 30%; left: 8%; animation-delay: 2s; }
+        .floating-icon:nth-child(4) { bottom: 15%; right: 5%; animation-delay: 1.5s; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(10deg); }
+        }
+
+        /* Section Styles */
+        section {
+            padding: 80px 0;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            background: rgba(77, 171, 247, 0.1);
+            border-radius: 50px;
+            margin-bottom: 16px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .section-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 42px;
+            font-weight: 800;
+            color: var(--primary-dark);
+            margin-bottom: 16px;
+        }
+
+        .section-subtitle {
+            font-size: 18px;
+            color: var(--text-light);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* HOW IT WORKS */
+        #how {
+            background: linear-gradient(180deg, var(--bg-secondary) 0%, var(--bg) 100%);
+        }
+
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+        }
+
+        .step {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: 32px 24px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            border: 2px solid transparent;
+        }
+
+        .step::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--primary-gradient);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .step:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-xl);
+            border-color: var(--primary);
+        }
+
+        .step:hover::before {
+            opacity: 1;
+        }
+
+        .step .num {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--primary-gradient);
+            color: var(--white);
+            font-weight: 700;
+            font-size: 18px;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 15px rgba(77, 171, 247, 0.3);
+        }
+
+        .step .icon {
+            font-size: 40px;
+            margin-bottom: 16px;
+            display: block;
+        }
+
+        .step h4 {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin-bottom: 10px;
+        }
+
+        .step p {
+            font-size: 14px;
+            color: var(--text-light);
+            line-height: 1.6;
+        }
+
+        /* FEATURES */
+        #features {
+            background: var(--white);
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+        }
+
+        .feature {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: 32px;
+            box-shadow: var(--shadow);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            border: 2px solid rgba(77, 171, 247, 0.1);
+        }
+
+        .feature::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.05) 0%, rgba(255, 107, 107, 0.05) 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .feature:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-xl);
+            border-color: var(--accent-3);
+        }
+
+        .feature:hover::after {
+            opacity: 1;
+        }
+
+        .feature .icon-wrapper {
+            width: 60px;
+            height: 60px;
+            border-radius: var(--radius);
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.15) 0%, rgba(255, 107, 107, 0.15) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .feature .icon {
+            font-size: 28px;
+            background: var(--warm-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 800;
+        }
+
+        .feature h4 {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .feature p {
+            font-size: 14px;
+            color: var(--text-light);
+            line-height: 1.6;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* FLASHCARDS */
+        #flashcards {
+            background: linear-gradient(180deg, var(--bg) 0%, var(--bg-secondary) 100%);
+        }
+
+        .flashcards-container {
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .flashcard {
+            width: 220px;
+            height: 150px;
+            perspective: 1000px;
+            cursor: pointer;
+        }
+
+        .flashcard-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .flashcard:hover .flashcard-inner {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-front,
+        .flashcard-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius-lg);
+            font-weight: 700;
+            font-size: 18px;
+            padding: 20px;
+        }
+
+        .flashcard-front {
+            background: var(--cool-gradient);
+            color: var(--white);
+        }
+
+        .flashcard-back {
+            transform: rotateY(180deg);
+            background: var(--warm-gradient);
+            color: var(--white);
+        }
+
+        /* TESTIMONIALS */
+        #testimonials {
+            background: var(--bg-secondary);
+        }
+
+        .testimonials {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        .testimonial {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: 32px;
+            box-shadow: var(--shadow);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            border: 2px solid transparent;
+        }
+
+        .testimonial::before {
+            content: '"';
+            position: absolute;
+            top: 20px;
+            left: 24px;
+            font-size: 60px;
+            font-family: Georgia, serif;
+            color: rgba(77, 171, 247, 0.15);
+            line-height: 1;
+        }
+
+        .testimonial:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-xl);
+            border-color: var(--accent-3);
+            background: linear-gradient(135deg, rgba(253, 246, 227, 0.5) 0%, var(--white) 100%);
+        }
+
+        .testimonial-content {
+            font-size: 16px;
+            color: var(--text);
+            line-height: 1.7;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .testimonial-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--primary-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .testimonial-info h5 {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin-bottom: 2px;
+        }
+
+        .testimonial-info span {
+            font-size: 13px;
+            color: var(--text-light);
+        }
+
+        .testimonial-rating {
+            margin-top: 16px;
+            color: var(--accent-3);
+        }
+
+        /* CTA Banner */
+        .cta-banner {
+            background: var(--primary-gradient);
+            border-radius: var(--radius-lg);
+            padding: 60px 48px;
+            margin-top: 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 32px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-banner::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .cta-banner::after {
+            content: '';
+            position: absolute;
+            bottom: -30%;
+            left: 10%;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .cta-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .cta-content h3 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--white);
+            margin-bottom: 8px;
+        }
+
+        .cta-content p {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.85);
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 16px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .cta-buttons .btn {
+            background: var(--white);
+            color: var(--primary-dark);
+        }
+
+        .cta-buttons .btn:hover {
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .cta-buttons .btn-ghost {
+            border-color: var(--white);
+            color: var(--white);
+        }
+
+        .cta-buttons .btn-ghost:hover {
+            background: var(--white);
+            color: var(--primary-dark);
+        }
+
+        /* FOOTER */
+        footer {
+            margin-top: 80px;
+            padding: 48px 0;
+            background: var(--primary-dark);
+            color: var(--white);
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 24px;
+        }
+
+        .footer-brand {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .footer-brand-name {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            font-size: 22px;
+        }
+
+        .footer-brand-tagline {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 32px;
+        }
+
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.85);
+            font-weight: 500;
+            font-size: 15px;
+        }
+
+        .footer-links a:hover {
+            color: var(--white);
+        }
+
+        .footer-social {
+            display: flex;
+            gap: 16px;
+        }
+
+        .footer-social a {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-size: 18px;
+        }
+
+        .footer-social a:hover {
+            background: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        /* Chatbot Widget */
+        .chatbot-toggle {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 64px;
+            height: 64px;
+            background: var(--primary-gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(77, 171, 247, 0.4);
+            z-index: 1000;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 3px solid var(--white);
+        }
+
+        .chatbot-toggle:hover {
+            transform: scale(1.1) translateY(-5px);
+            box-shadow: 0 12px 35px rgba(77, 171, 247, 0.5);
+        }
+
+        .chatbot-toggle i {
+            font-size: 26px;
+            color: white;
+        }
+
+        .chatbot-pulse {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: var(--primary);
+            animation: pulse-ring 2s infinite;
+            z-index: -1;
+        }
+
+        @keyframes pulse-ring {
+            0% { transform: scale(1); opacity: 0.5; }
+            100% { transform: scale(1.5); opacity: 0; }
+        }
+
+        #chatbotModal {
+            display: none;
+            position: fixed;
+            bottom: 100px;
+            right: 24px;
+            width: 380px;
+            height: 520px;
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            flex-direction: column;
+            z-index: 999;
+            overflow: hidden;
+            border: 1px solid rgba(77, 171, 247, 0.2);
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        #chatbotModal.active {
+            display: flex;
+        }
+
+        .chat-header {
+            background: var(--primary-gradient);
+            color: var(--white);
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .chat-header-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chat-header-avatar i {
+            font-size: 22px;
+        }
+
+        .chat-header-info h4 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .chat-header-info span {
+            font-size: 12px;
+            opacity: 0.85;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .chat-header-info span::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: #10b981;
+            border-radius: 50%;
+        }
+
+        .chat-close {
+            margin-left: auto;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--white);
+            transition: all 0.3s ease;
+        }
+
+        .chat-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+        }
+
+        .message {
+            margin-bottom: 16px;
+            padding: 14px 18px;
+            border-radius: var(--radius);
+            max-width: 85%;
+            line-height: 1.5;
+            font-size: 14px;
+            position: relative;
+        }
+
+        .bot-message {
+            background: var(--white);
+            color: var(--text);
+            margin-right: auto;
+            border: 1px solid #e2e8f0;
+            border-bottom-left-radius: 4px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .user-message {
+            background: var(--primary-gradient);
+            color: var(--white);
+            margin-left: auto;
+            border-bottom-right-radius: 4px;
+            box-shadow: var(--shadow);
+        }
+
+        .chat-input {
+            display: flex;
+            padding: 16px 20px;
+            border-top: 1px solid #e2e8f0;
+            gap: 12px;
+            background: var(--white);
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 14px 18px;
+            border: 2px solid #e2e8f0;
+            border-radius: 25px;
+            outline: none;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .chat-input input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(77, 171, 247, 0.1);
+        }
+
+        .chat-input button {
+            width: 48px;
+            height: 48px;
+            background: var(--primary-gradient);
+            color: var(--white);
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chat-input button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(77, 171, 247, 0.4);
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 1024px) {
+            .steps,
+            .features {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .hero h1 {
+                font-size: 44px;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .container.nav {
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .hero {
+                grid-template-columns: 1fr;
+                text-align: center;
+                gap: 40px;
+            }
+
+            .hero-description {
+                margin: 0 auto 32px;
+            }
+
+            .hero-ctas {
+                justify-content: center;
+            }
+
+            .hero-stats {
+                justify-content: center;
+            }
+
+            .testimonials {
+                grid-template-columns: 1fr;
+            }
+
+            .cta-banner {
+                flex-direction: column;
+                text-align: center;
+                padding: 40px 24px;
+            }
+
+            .footer-content {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 0 16px;
+            }
+
+            .hero-section {
+                padding: 40px 0 60px;
+            }
+
+            .hero h1 {
+                font-size: 32px;
+            }
+
+            .section-title {
+                font-size: 28px;
+            }
+
+            .steps,
+            .features {
+                grid-template-columns: 1fr;
+            }
+
+            #chatbotModal {
+                width: 95%;
+                right: 2.5%;
+                height: 70vh;
+                bottom: 90px;
+            }
+
+            .hero-stats {
+                flex-direction: column;
+                gap: 20px;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-on-scroll {
+            opacity: 0;
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-dark);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container nav">
+            <!-- Logo and Brand -->
+            <div class="brand">
+                <lottie-player
+                    src="{{ url_for('static', filename='lottie/girl.json') }}"
+                    background="transparent"
+                    speed="1"
+                    style="width:72px; height:72px;"
+                    loop
+                    autoplay>
+                </lottie-player>
+                <div class="brand-text">
+                    <div class="brand-name">LearnBuddy</div>
+                    <div class="brand-tagline">Adaptive learning, simplified</div>
+                </div>
+            </div>
+            <!-- Navigation links -->
+            <nav class="nav-links">
+                <a href="#how">How it Works</a>
+                <a href="#features">Features</a>
+                <a href="#testimonials">Testimonials</a>
+               <a href="{{ url_for('signup') }}" class="btn">SignUp</a>
+                <a href="{{ url_for('login') }}" class="btn">Login</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <!-- HERO -->
+        <section class="hero-section">
+            <div class="container">
+                <div class="hero">
+                    <div class="hero-content">
+                        <div class="hero-badge">
+                            <i class="fas fa-sparkles"></i>
+                            <span>AI-Powered Learning Platform</span>
+                        </div>
+                        <h1>Learn <span class="highlight">Smarter</span>, Not Harder <span class="emoji">✨</span></h1>
+                        <p class="hero-description">Take fun quizzes, follow your personalized learning path, and track progress with adaptive lessons tailored just for you.</p>
+                        <div class="hero-ctas">
+                            <a href="{{ url_for('signup') }}" class="btn">
+                                <i class="fas fa-play"></i> Get Started — It's Free
+                            </a>
+                            <a href="{{ url_for('demo') }}" class="btn-ghost">
+                                <i class="fas fa-gamepad"></i> Try a Demo Quiz
+                            </a>
+                        </div>
+                        <div class="hero-stats">
+                            <div class="stat-item">
+                                <div class="stat-number">50K+</div>
+                                <div class="stat-label">Active Learners</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number">1M+</div>
+                                <div class="stat-label">Quizzes Completed</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number">4.9★</div>
+                                <div class="stat-label">User Rating</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="hero-visual">
+                        <lottie-player
+                            src="{{ url_for('static', filename='lottie/student.json') }}"
+                            background="transparent"
+                            speed="1"
+                            style="width:450px; height:450px;"
+                            loop
+                            autoplay>
+                        </lottie-player>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- HOW IT WORKS -->
+        <section id="how">
+            <div class="container">
+                <div class="section-header">
+                    <div class="section-badge">
+                        <i class="fas fa-route"></i> Your Learning Journey
+                    </div>
+                    <h2 class="section-title">How It Works</h2>
+                    <p class="section-subtitle">Get started in minutes and begin your personalized learning adventure</p>
+                </div>
+                <div class="steps">
+                    <div class="step">
+                        <div class="num">1</div>
+                        <div class="icon">👤</div>
+                        <h4>Create Account</h4>
+                        <p>Sign up in seconds and set up your learning profile.</p>
+                    </div>
+                    <div class="step">
+                        <div class="num">2</div>
+                        <div class="icon">📝</div>
+                        <h4>Take a Fun Quiz</h4>
+                        <p>Start with quick assessments to check your level & mood.</p>
+                    </div>
+                    <div class="step">
+                        <div class="num">3</div>
+                        <div class="icon">🎯</div>
+                        <h4>Personalized Path</h4>
+                        <p>Our AI builds a unique journey for your speed & style of learning.</p>
+                    </div>
+                    <div class="step">
+                        <div class="num">4</div>
+                        <div class="icon">⚖️</div>
+                        <h4>Dynamic Adjustments</h4>
+                        <p>Slow bloomers get extra modules & support 💡, fast learners skip what they already know 🚀.</p>
+                    </div>
+                    <div class="step">
+                        <div class="num">5</div>
+                        <div class="icon">🎮</div>
+                        <h4>Stay Motivated</h4>
+                        <p>If you feel bored, jump into fun quizzes anytime 🔥.</p>
+                    </div>
+                    <div class="step">
+                        <div class="num">6</div>
+                        <div class="icon">🃏</div>
+                        <h4>Smart Flashcards</h4>
+                        <p>Auto-generated flashcards for quick revision & memory boost 📚.</p>
+                    </div>
+                    <div class="step">
+                        <div class="num">7</div>
+                        <div class="icon">📈</div>
+                        <h4>Track Progress</h4>
+                        <p>See growth over time, get focus suggestions, and unlock milestones 🏆.</p>
+                    </div>
+                    <div class="step">
+                        <div class="num">8</div>
+                        <div class="icon">🤖</div>
+                        <h4>Instant Doubt Help</h4>
+                        <p>Stuck somewhere? Ask your doubt and get instant hints or AI guidance 🧠.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FEATURES -->
+        <section id="features">
+            <div class="container">
+                <div class="section-header">
+                    <div class="section-badge">
+                        <i class="fas fa-star"></i> Why Choose Us
+                    </div>
+                    <h2 class="section-title">Key Benefits & Features</h2>
+                    <p class="section-subtitle">Everything you need for effective, enjoyable learning</p>
+                </div>
+                <div class="features">
+                    <div class="feature">
+                        <div class="icon-wrapper">
+                            <div class="icon">A</div>
+                        </div>
+                        <h4>Adaptive Quizzes</h4>
+                        <p>Quizzes adapt in difficulty to pinpoint strengths and gaps quickly.</p>
+                    </div>
+                    <div class="feature">
+                        <div class="icon-wrapper">
+                            <div class="icon">T</div>
+                        </div>
+                        <h4>Tailored Modules</h4>
+                        <p>Custom modules for every grade and subject—pick the topics you want.</p>
+                    </div>
+                    <div class="feature">
+                        <div class="icon-wrapper">
+                            <div class="icon">P</div>
+                        </div>
+                        <h4>Progress Tracking</h4>
+                        <p>Smart analytics show growth over time, strengths, and focus areas.</p>
+                    </div>
+                    <div class="feature">
+                        <div class="icon-wrapper">
+                            <div class="icon">R</div>
+                        </div>
+                        <h4>Focused Re-learning</h4>
+                        <p>Targeted recommendations to revisit concepts you missed.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FLASHCARDS PREVIEW -->
+        <section id="flashcards">
+            <div class="container">
+                <div class="section-header">
+                    <div class="section-badge">
+                        <i class="fas fa-clone"></i> Quick Revision
+                    </div>
+                    <h2 class="section-title">Interactive Flashcards</h2>
+                    <p class="section-subtitle">Hover over the cards to reveal the answers</p>
+                </div>
+                <div class="flashcards-container">
+                    <div class="flashcard">
+                        <div class="flashcard-inner">
+                            <div class="flashcard-front">5 × 6 = ?</div>
+                            <div class="flashcard-back">30 ✅</div>
+                        </div>
+                    </div>
+                    <div class="flashcard">
+                        <div class="flashcard-inner">
+                            <div class="flashcard-front">Capital of France?</div>
+                            <div class="flashcard-back">Paris ✅</div>
+                        </div>
+                    </div>
+                    <div class="flashcard">
+                        <div class="flashcard-inner">
+                            <div class="flashcard-front">H₂O is?</div>
+                            <div class="flashcard-back">Water ✅</div>
+                        </div>
+                    </div>
+                    <div class="flashcard">
+                        <div class="flashcard-inner">
+                            <div class="flashcard-front">√144 = ?</div>
+                            <div class="flashcard-back">12 ✅</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TESTIMONIALS -->
+        <section id="testimonials">
+            <div class="container">
+                <div class="section-header">
+                    <div class="section-badge">
+                        <i class="fas fa-heart"></i> Loved by Learners
+                    </div>
+                    <h2 class="section-title">What Learners & Teachers Say</h2>
+                    <p class="section-subtitle">Join thousands of happy learners already using LearnBuddy</p>
+                </div>
+                <div class="testimonials">
+                    <div class="testimonial">
+                        <div class="testimonial-content">"Made algebra fun again! The adaptive quizzes helped me understand concepts I struggled with for months."</div>
+                        <div class="testimonial-author">
+                            <div class="testimonial-avatar">A</div>
+                            <div class="testimonial-info">
+                                <h5>Asha Kumar</h5>
+                                <span>Grade 10 Student</span>
+                            </div>
+                        </div>
+                        <div class="testimonial-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                    </div>
+                    <div class="testimonial">
+                        <div class="testimonial-content">"The analytics helped my students improve by 23%. I can now identify weak areas and provide targeted support."</div>
+                        <div class="testimonial-author">
+                            <div class="testimonial-avatar">R</div>
+                            <div class="testimonial-info">
+                                <h5>Mr. Rao</h5>
+                                <span>Maths Teacher</span>
+                            </div>
+                        </div>
+                        <div class="testimonial-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                    </div>
+                    <div class="testimonial">
+                        <div class="testimonial-content">"Short quizzes, big results. My daughter loves the gamified approach and looks forward to learning every day!"</div>
+                        <div class="testimonial-author">
+                            <div class="testimonial-avatar">S</div>
+                            <div class="testimonial-info">
+                                <h5>Shruti Patel</h5>
+                                <span>Parent</span>
+                            </div>
+                        </div>
+                        <div class="testimonial-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Banner -->
+        <div class="container">
+            <section class="cta-banner">
+                <div class="cta-content">
+                    <h3>Ready to Start Your Learning Journey?</h3>
+                    <p>Join thousands of learners getting smarter every day.</p>
+                </div>
+                <div class="cta-buttons">
+                    <a href="{{ url_for('signup') }}" class="btn">
+                        <i class="fas fa-rocket"></i> Sign Up Free
+                    </a>
+                    <a href="{{ url_for('demo') }}" class="btn-ghost">
+                        <i class="fas fa-play"></i> Take Demo Quiz
+                    </a>
+                </div>
+            </section>
+        </div>
+
+        <!-- FOOTER -->
+        <footer>
+            <div class="container">
+                <div class="footer-content">
+                    <div class="footer-brand">
+                        <div class="footer-brand-name">LearnBuddy</div>
+                        <div class="footer-brand-tagline">Adaptive learning • Privacy-first • Student friendly</div>
+                    </div>
+                    <div class="footer-links">
+                        <a href="#">About</a>
+                        <a href="#">Contact</a>
+                        <a href="#">Privacy</a>
+                        <a href="#">Terms</a>
+                    </div>
+                    <div class="footer-social">
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </main>
+
+    <!-- Chatbot Widget -->
+    <div class="chatbot-toggle" onclick="toggleChatbot()">
+        <div class="chatbot-pulse"></div>
+        <i class="fas fa-comments"></i>
+    </div>
+    <div id="chatbotModal">
+        <div class="chat-header">
+            <div class="chat-header-avatar">
+                <i class="fas fa-robot"></i>
+            </div>
+            <div class="chat-header-info">
+                <h4>LearnBuddy Assistant</h4>
+                <span>Online</span>
+            </div>
+            <button class="chat-close" onclick="toggleChatbot()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="chat-messages" id="chatMessages">
+            <div class="message bot-message">Hi! 👋 Ask me anything about your current module to clear doubts.</div>
+        </div>
+        <div class="chat-input">
+            <input type="text" id="chatInput" placeholder="Type your doubt..." onkeypress="handleKeyPress(event)">
+            <button onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+
+    <script>
+        // Flashcard flip functionality
+        document.querySelectorAll('.flashcard').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.querySelector('.flashcard-inner').style.transform = 'rotateY(180deg)';
+            });
+            card.addEventListener('mouseleave', () => {
+                card.querySelector('.flashcard-inner').style.transform = 'rotateY(0deg)';
+            });
+        });
+
+        // Chatbot functions
+        let currentChatContext = '';
+        let currentModule = '';
+
+        // Function to update chat context based on current module
+        function updateChatContext(moduleName) {
+            currentChatContext = `Context: Current module is "${moduleName}". `;
+            currentModule = moduleName;
+            if (document.getElementById('chatbotModal').classList.contains('active')) {
+                addMessage(`Now helping with ${moduleName} questions! Ask away.`, 'bot');
+            }
+        }
+
+        // Toggle chatbot visibility
+        function toggleChatbot() {
+            const modal = document.getElementById('chatbotModal');
+            modal.classList.toggle('active');
+
+            // If opening chatbot, send welcome message with current context
+            if (modal.classList.contains('active')) {
+                if (currentModule) {
+                    addMessage(`How can I help with ${currentModule}?`, 'bot');
+                }
+            }
+        }
+
+        // Handle Enter key press
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        // Send message to chatbot
+        async function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            if (!message) return;
+
+            // Add user message
+            addMessage(message, 'user');
+            input.value = '';
+
+            // Show typing indicator
+            addMessage('Typing...', 'bot');
+
+            try {
+                // In a real implementation, you would call your backend API here
+                // For demo purposes, we'll simulate a response
+                setTimeout(() => {
+                    // Remove typing indicator
+                    const messages = document.getElementById('chatMessages');
+                    messages.removeChild(messages.lastChild);
+
+                    // Simulate different responses based on context
+                    let response;
+                    if (message.toLowerCase().includes('hello') || message.toLowerCase().includes('hi')) {
+                        response = `Hello! I'm here to help with your ${currentModule || 'studies'}. What would you like to know?`;
+                    } else if (message.toLowerCase().includes('help')) {
+                        response = `Sure! I can help with ${currentModule || 'various subjects'}. Try asking me about specific concepts or problems you're working on.`;
+                    } else if (message.toLowerCase().includes('math') || message.toLowerCase().includes('mathematics')) {
+                        response = `For math questions, try asking about specific topics like algebra, geometry, or calculus. For example: "How do I solve quadratic equations?" or "What is the Pythagorean theorem?"`;
+                    } else if (message.toLowerCase().includes('science')) {
+                        response = `I can help with science topics! Try asking about biology concepts, chemistry formulas, or physics principles. For example: "What is photosynthesis?" or "Explain Newton's laws of motion."`;
+                    } else if (message.toLowerCase().includes('thanks') || message.toLowerCase().includes('thank')) {
+                        response = `You're welcome! Feel free to ask if you have more questions about ${currentModule || 'your studies'}.`;
+                    } else {
+                        response = `Here's some information about "${message}": [This is a simulated response. In a real implementation, this would be a detailed answer from your backend AI service based on the current module context: ${currentModule || 'General Studies'}]`;
+                    }
+
+                    // Add bot response
+                    addMessage(response, 'bot');
+                }, 1000);
+            } catch (error) {
+                // Remove typing, add error
+                const messages = document.getElementById('chatMessages');
+                messages.removeChild(messages.lastChild);
+                addMessage('Sorry, I couldn\'t process that. Try again!', 'bot');
+                console.error(error);
+            }
+        }
+
+        // Add message to chat
+        function addMessage(text, sender) {
+            const messages = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}-message`;
+            messageDiv.textContent = text;
+            messages.appendChild(messageDiv);
+            messages.scrollTop = messages.scrollHeight;
+        }
+
+        // Example: Update context when user clicks on a module (you would call this from your module selection code)
+        function setModuleContext(moduleName) {
+            updateChatContext(moduleName);
+            console.log(`Chat context updated to: ${moduleName}`);
+        }
+
+        // Smooth scroll for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Intersection Observer for scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe elements for animation
+        document.querySelectorAll('.step, .feature, .testimonial, .flashcard').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(30px)';
+            el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>

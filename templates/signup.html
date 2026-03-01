@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sign Up — LearnBuddy</title>
+<script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{ --accent-4:#4dabf7; }
+*{box-sizing:border-box;}
+html, body { margin: 0; padding: 0; height: 100%; font-family: 'Inter', sans-serif; background: #fff; color:#1E3A8A; }
+.fullscreen-container { display: flex; flex-direction: row; width: 100%; height: 100%; }
+.signup-left { flex: 1; display: flex; justify-content: center; align-items: center; }
+.signup-right { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 48px 32px; }
+.signup-right h2 { font-family: Poppins, sans-serif; font-size: 52px; margin-bottom: 24px; color:#1E3A8A; }
+.input-group { display: flex; flex-direction: column; margin-bottom: 16px; }
+.input-group label { font-weight: 600; margin-bottom: 6px; color: #1E3A8A; }
+.input-group input, .input-group select { padding: 12px 14px; border: 2px solid var(--accent-4); border-radius: 8px; font-size: 16px; background: #fff; color: var(--accent-4); outline: none; transition: all 0.3s ease; }
+.input-group input:hover, .input-group select:hover { border-color: #1e3a8a; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+.input-group input:focus, .input-group select:focus { border-color: #1e3a8a; box-shadow: 0 0 0 3px rgba(77,171,247,0.3); }
+.btn { padding: 10px 10px; border: 0; border-radius: 10px; width:400px; height:50px; background: var(--accent-4); color:#fff; font-weight: 700; font-size: 16px; cursor: pointer; margin: 12px auto 0; display: block; transition: transform 0.2s; }
+.btn:hover { transform: scale(1.05); background: #1E3A8A; }
+.p { text-align:center; color: #1E3A8A; cursor: pointer; }
+@media (max-width: 900px) {
+  .fullscreen-container { flex-direction: column; }
+  .signup-left, .signup-right { flex: unset; width: 100%; height: 50%; }
+}
+</style>
+</head>
+<body>
+
+<div class="fullscreen-container">
+  <div class="signup-left">
+    <!-- Lottie animation from static folder -->
+    <lottie-player 
+      src="{{ url_for('static', filename='lottie/login.json') }}" 
+      background="transparent" 
+      speed="1" 
+      style="width: 500px; height: 500px;" 
+      loop 
+      autoplay>
+    </lottie-player>
+  </div>
+
+  <div class="signup-right">
+    <h2>Create Your Account</h2>
+    <form id="signupForm">
+      <div class="input-group">
+        <label for="name">Full Name</label>
+        <input type="text" id="name" placeholder="John Doe">
+      </div>
+      <div class="input-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" placeholder="example@mail.com">
+      </div>
+      <div class="input-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" placeholder="********">
+      </div>
+      <div class="input-group">
+        <label for="grade">Select Grade</label>
+        <select id="grade">
+          <option value="">Choose your grade</option>
+          <option value="1-5">1-5</option>
+          <option value="6-10">6-10</option>
+          <option value="11-12">11-12</option>
+        </select>
+      </div>
+      <button class="btn" type="submit">Sign Up</button>
+      <p class="p">Already have an account? <a href="{{ url_for('login') }}">Login</a></p>
+    </form>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-auth.js";
+import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBY3vXosHcqGT1T6Jo4-0QhkusmM5a0Cyo",
+  authDomain: "learnbuddy-c0f4b.firebaseapp.com",
+  projectId: "learnbuddy-c0f4b",
+  storageBucket: "learnbuddy-c0f4b.firebasestorage.app",
+  messagingSenderId: "658794807805",
+  appId: "1:658794807805:web:319bc7ddee319359149994",
+  measurementId: "G-3CMN5FG3GQ"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+document.getElementById("signupForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const name = document.getElementById("name").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value.trim();
+  const gradeGroup = document.getElementById("grade").value;
+
+  if (!name || !email || !password || !gradeGroup) {
+    alert("Please fill all fields and select grade group.");
+    return;
+  }
+
+  try {
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const uid = userCredential.user.uid;
+
+    await setDoc(doc(db, "users", uid), {
+      name,
+      email,
+      gradeGroup,
+      createdAt: new Date()
+    });
+
+    alert("Account created successfully!");
+    // redirect via Flask route
+    window.location.href = "/login";
+
+  } catch (err) {
+    console.error(err);
+    switch(err.code) {
+      case "auth/email-already-in-use":
+        alert("This email is already registered. Please log in.");
+        break;
+      case "auth/invalid-email":
+        alert("Invalid email address.");
+        break;
+      case "auth/weak-password":
+        alert("Password must be at least 6 characters.");
+        break;
+      default:
+        alert("Error: " + err.message);
+    }
+  }
+});
+</script>
+
+</body>
+</html>
