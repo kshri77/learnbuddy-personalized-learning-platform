@@ -17,6 +17,9 @@ Technology Stack
     Backend: Flask
     Database: Firebase
 
+Screenshots
+
+![App Screenshot](./assets/learnbuddy landing page.png)
 
 🎥 Demo Video
 
