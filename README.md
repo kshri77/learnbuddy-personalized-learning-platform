@@ -16,3 +16,8 @@ Technology Stack
     Frontend: HTML, CSS, JavaScript
     Backend: Flask
     Database: Firebase
+
+
+🎥 Demo Video
+
+[Click here to watch the demo](./demolearnbuddy.mp4)
